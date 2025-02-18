@@ -1,33 +1,10 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const axios = require("axios");
-const { MongoClient, ServerApiVersion } = require('mongodb'); // MongoClient lets us connect to our database
 
 /* INITIALIZE DATABASE */
-const uri = "mongodb+srv://daniel:devx-week4@cluster-test.xzfom.mongodb.net/?retryWrites=true&w=majority&appName=cluster-test"; // how we identify our database
-const DB_NAME = "daniel";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    }
-});
-
-async function connectToDatabase() {
-    try {
-        console.log("Connecting to MongoDB...");
-        await client.connect(); // connect to db
-        await client.db(DB_NAME).command({ ping: 1 });
-        console.log("Successfully connected!");
-    } catch (error) {
-        console.error("Database connection failed.");
-        process.exit(1);
-    }
-}
-connectToDatabase();
+//...
 
 /* INITIALIZE SERVER */
 const app = express();
@@ -43,39 +20,15 @@ app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
+/* ACCESS DATABASE */
 
-/* WEEK 4: DATABASE ROUTES */
-route.post('/users', async (req, res) => {
-    try {
-        const newUser = req.body;
-        if (!newUser || Object.keys(newUser).length === 0) {
-            return res.status(400).json({ error: "Invalid user data" });
-        }
+// ...
 
-        const createdUser = await insertUserService(newUser);
-        console.log("Inserted new user:", createdUser);
-        res.status(201).json(createdUser);
-    } catch (error) {
-        console.error("Failed to create a new user:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
+/* DATABASE ROUTES */
 
-async function insertUserService (newUser) {
-    try {
-        const usersCollection = client.db(DB_NAME).collection("users");
-        const result = await usersCollection.insertOne(newUser);
+// ...
 
-        return await usersCollection.findOne({ _id: result.insertedId });
-    } catch (error) {
-        console.error("Error inserting user into the database:", error);
-        throw error;
-    }
-};
-
-
-
-/* ROUTES */
+/* OLD ROUTES */
 // static GET
 route.get('/simple-get', (req, res) => {
   res.send("here");
